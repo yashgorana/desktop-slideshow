@@ -13,6 +13,7 @@ Create a task using Task Scheduler and invoke this on as required.
 - [x] Detect all displays using Win API
 - [x] Automatically pick the best resolution
 - [ ] Set Provider from Config File
+- [ ] Github CI & Releases
 - [ ] Automatically create scheduled task on first launch
 - [ ] Package with MSIX
 - [ ] Improve Readme
