@@ -8,11 +8,19 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type UnsplashWallpaperApi struct {
+type UnsplashProvider struct {
 	SearchTags string
 }
 
-func (api *UnsplashWallpaperApi) DownloadWallpaper(res *Resolution, toPath string) error {
+func (p UnsplashProvider) GetApiInstance() WallpaperApi {
+	return unsplashWallpaperApi(p)
+}
+
+type unsplashWallpaperApi struct {
+	SearchTags string
+}
+
+func (api unsplashWallpaperApi) DownloadWallpaper(res *Resolution, toPath string) error {
 
 	path, err := filepath.Abs(toPath)
 	if err != nil {

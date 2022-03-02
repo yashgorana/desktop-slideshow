@@ -5,6 +5,10 @@ type Resolution struct {
 	Height uint32
 }
 
-type WallpaperAPI interface {
+type WallpaperProvider interface {
+	GetApiInstance() WallpaperApi
+}
+
+type WallpaperApi interface {
 	DownloadWallpaper(resolution *Resolution, toPath string) error
 }

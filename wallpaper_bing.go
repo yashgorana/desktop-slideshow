@@ -12,7 +12,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type BingWallpaperAPIResponse struct {
+type BingWallpaperApiResponse struct {
 	Images []struct {
 		Startdate     string        `json:"startdate"`
 		Fullstartdate string        `json:"fullstartdate"`
@@ -46,11 +46,19 @@ type bingWallpaperUrlProps struct {
 	n      uint8
 }
 
-type BingWallpaperApi struct {
+type BingProvider struct {
 	Market string
 }
 
-func (api *BingWallpaperApi) DownloadWallpaper(res *Resolution, toPath string) error {
+func (p BingProvider) GetApiInstance() WallpaperApi {
+	return bingWallpaperApi(p)
+}
+
+type bingWallpaperApi struct {
+	Market string
+}
+
+func (api bingWallpaperApi) DownloadWallpaper(res *Resolution, toPath string) error {
 	path, err := filepath.Abs(toPath)
 	if err != nil {
 		return err
@@ -85,10 +93,9 @@ func (api *BingWallpaperApi) DownloadWallpaper(res *Resolution, toPath string) e
 	log.Debug("BingWallpaperApi: Fetching image from ", dlUrl, " to ", path)
 
 	return DownloadFile(dlUrl, path)
-
 }
 
-func getWallpaperMetadata(market string, count uint8) (*BingWallpaperAPIResponse, error) {
+func getWallpaperMetadata(market string, count uint8) (*BingWallpaperApiResponse, error) {
 	apiUrl := urlFromProps(&bingWallpaperUrlProps{
 		format: "js",
 		mkt:    market,
@@ -108,7 +115,7 @@ func getWallpaperMetadata(market string, count uint8) (*BingWallpaperAPIResponse
 	}
 	defer resp.Body.Close()
 
-	var response BingWallpaperAPIResponse
+	var response BingWallpaperApiResponse
 	json.NewDecoder(resp.Body).Decode(&response)
 
 	return &response, nil

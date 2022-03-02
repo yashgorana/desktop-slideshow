@@ -34,10 +34,9 @@ func main() {
 	log.Infof("Detected screen with resolution %dx%d", screenRes.Width, screenRes.Height)
 
 	mgr := WallpaperManager{
-		Provider:   ProviderUnsplash,
-		Resolution: screenRes,
-		ProviderArgs: UnsplashArgs{
-			SearchTag: "wallpaper",
+		Resolution: &screenRes,
+		Provider: &UnsplashProvider{
+			SearchTags: "wallpaper",
 		},
 	}
 
@@ -59,7 +58,7 @@ func executablePath() string {
 	return filepath.Dir(ex)
 }
 
-func getDisplayResolution() *Resolution {
+func getDisplayResolution() Resolution {
 	displays := GetConnectedDisplays()
 	if displays == nil {
 		log.Fatal("No displays found!")
@@ -68,8 +67,8 @@ func getDisplayResolution() *Resolution {
 	return getLargestDisplayResolution(displays)
 }
 
-func getLargestDisplayResolution(displays *ConnectedDisplays) *Resolution {
-	largestResolution := &Resolution{}
+func getLargestDisplayResolution(displays *ConnectedDisplays) Resolution {
+	largestResolution := Resolution{}
 
 	for _, disp := range displays.displays {
 		if disp.WidthPx > largestResolution.Width && disp.HeightPx > largestResolution.Height {

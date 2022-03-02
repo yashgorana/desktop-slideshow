@@ -2,6 +2,8 @@
 
 Desktop wallpaper changer for Windows.
 
+The sole purpose of this project is to learn Go & its design patterns.
+
 ## How-To
 
 Create a task using Task Scheduler and invoke this on as required.
