@@ -9,6 +9,7 @@ import (
 )
 
 type UnsplashProvider struct {
+	Source     string
 	SearchTags string
 }
 
@@ -17,6 +18,7 @@ func (p UnsplashProvider) GetApiInstance() WallpaperApi {
 }
 
 type unsplashWallpaperApi struct {
+	Source     string
 	SearchTags string
 }
 
@@ -26,13 +28,13 @@ func (api unsplashWallpaperApi) DownloadWallpaper(res *Resolution, toPath string
 	if err != nil {
 		return err
 	}
-	url := unsplashUrlWithArgs(res.Width, res.Height, api.SearchTags)
+	url := api.unsplashUrlWithSize(res.Width, res.Height)
 
 	log.Debug("UnsplashApi: Fetching image from ", url, " to ", path)
 
 	return DownloadFile(url, toPath)
 }
 
-func unsplashUrlWithArgs(w uint32, h uint32, query string) string {
-	return fmt.Sprintf("https://source.unsplash.com/random/%dx%d/?%s", w, h, url.QueryEscape(query))
+func (api unsplashWallpaperApi) unsplashUrlWithSize(w uint32, h uint32) string {
+	return fmt.Sprintf("https://source.unsplash.com/%s/%dx%d/?%s", api.Source, w, h, url.QueryEscape(api.SearchTags))
 }

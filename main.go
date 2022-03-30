@@ -36,6 +36,8 @@ func main() {
 	mgr := WallpaperManager{
 		Resolution: &screenRes,
 		Provider: &UnsplashProvider{
+			// collection/<collection_id> | user/<user_id> | featured, random, daily, weekly
+			Source:     "collection/11649432",
 			SearchTags: "wallpaper",
 		},
 	}
