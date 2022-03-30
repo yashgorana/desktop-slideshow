@@ -2,11 +2,14 @@
 
 Desktop wallpaper changer for Windows.
 
-The sole purpose of this project is to learn Go & its design patterns.
+## Build
 
-## How-To
+Running `build.sh` script generates the executable in the `out/` folder
 
-Create a task using Task Scheduler and invoke this on as required.
+## Usage
+
+* Run the binary to set a new wallpaper.
+* Alternatively, you can periodically run the binary using Windows Task Scheduler. 
 
 ## TODO
 
