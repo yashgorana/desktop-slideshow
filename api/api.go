@@ -1,12 +1,8 @@
-package main
+package api
 
 type WallpaperSize struct {
 	Width  uint32
 	Height uint32
-}
-
-type IWallpaperProvider interface {
-	GetApiInstance() IWallpaperApi
 }
 
 type IWallpaperApi interface {

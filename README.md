@@ -4,7 +4,7 @@ Desktop wallpaper changer for Windows.
 
 ## Build
 
-Running `build.sh` script generates the executable in the `out/` folder
+Running `build.sh` script generates the executable in the `.out/` folder
 
 ## Usage
 

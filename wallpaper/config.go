@@ -1,13 +1,12 @@
-package main
+package wallpaper
 
 import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
-type Configuration struct {
+type WallpaperManagerConfig struct {
 	Provider string
-
 	Unsplash UnsplashConfig
 	Bing     BingConfig
 }
@@ -21,8 +20,8 @@ type BingConfig struct {
 	Market string
 }
 
-func GetConfig() *Configuration {
-	var config Configuration
+func LoadConfig() *WallpaperManagerConfig {
+	var config WallpaperManagerConfig
 
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
@@ -35,7 +34,6 @@ func GetConfig() *Configuration {
 
 	log.Debug("Loading config.yaml")
 	if err := viper.ReadInConfig(); err != nil {
-
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			// Config file not found; ignore error if desired
 			log.Info("config.yaml missing, will use defaults")

@@ -22,3 +22,4 @@ go.work
 
 # Ignored directories
 out/
+.out/

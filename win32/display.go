@@ -1,23 +1,12 @@
-package main
+package win32
 
 import (
 	"syscall"
 	"unsafe"
 
 	"github.com/gonutz/w32/v2"
+
 	log "github.com/sirupsen/logrus"
-)
-
-const (
-	SPI_SETDESKWALLPAPER = 0x0014
-	SPIF_UPDATEINIFILE   = 0x01
-	SPIF_SENDCHANGE      = 0x02
-)
-
-var (
-	libUser32            = syscall.NewLazyDLL("user32.dll")
-	systemParametersInfo = libUser32.NewProc("SystemParametersInfoW")
-	libGetMonitorInfoW   = libUser32.NewProc("GetMonitorInfoW")
 )
 
 type Display struct {
@@ -47,22 +36,6 @@ func GetLargestDisplay() Display {
 	}
 
 	return largestDisp
-}
-
-// SetFromFile sets the wallpaper for the current user.
-func SetWallpaperFromFile(filename string) error {
-	filenamePtr, err := syscall.UTF16PtrFromString(filename)
-	if err != nil {
-		return err
-	}
-
-	systemParametersInfo.Call(
-		uintptr(SPI_SETDESKWALLPAPER),
-		uintptr(0),
-		uintptr(unsafe.Pointer(filenamePtr)),
-		uintptr(SPIF_UPDATEINIFILE|SPIF_SENDCHANGE),
-	)
-	return nil
 }
 
 // GetConnectedDisplays fetches the connected displays and their current settings (currently limited to screen resolution)

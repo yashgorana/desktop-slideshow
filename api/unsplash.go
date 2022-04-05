@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"fmt"
@@ -7,23 +7,17 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
+
+	"github.com/yashgorana/desktop-slideshow/utils"
 )
 
-type UnsplashProvider struct {
+// Implements IWallpaperApi
+type UnsplashApi struct {
 	Source     string
 	SearchTags []string
 }
 
-func (p UnsplashProvider) GetApiInstance() IWallpaperApi {
-	return unsplashWallpaperApi(p)
-}
-
-type unsplashWallpaperApi struct {
-	Source     string
-	SearchTags []string
-}
-
-func (api unsplashWallpaperApi) DownloadWallpaper(size *WallpaperSize, toPath string) error {
+func (api UnsplashApi) DownloadWallpaper(size *WallpaperSize, toPath string) error {
 	path, err := filepath.Abs(toPath)
 	if err != nil {
 		return err
@@ -32,10 +26,10 @@ func (api unsplashWallpaperApi) DownloadWallpaper(size *WallpaperSize, toPath st
 	url := api.unsplashUrlWithSize(size.Width, size.Height)
 	log.Debug("UnsplashApi: Fetching image from ", url, " to ", path)
 
-	return DownloadFile(url, toPath)
+	return utils.DownloadFile(url, toPath)
 }
 
-func (api unsplashWallpaperApi) unsplashUrlWithSize(w uint32, h uint32) string {
+func (api UnsplashApi) unsplashUrlWithSize(w uint32, h uint32) string {
 	searchTags := ""
 	if len(api.SearchTags) > 0 {
 		searchTags = fmt.Sprintf("?%s", url.QueryEscape(strings.Join(api.SearchTags, ",")))

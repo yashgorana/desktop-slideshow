@@ -1,10 +1,13 @@
-package main
+package wallpaper
 
 import (
 	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/yashgorana/desktop-slideshow/api"
+	"github.com/yashgorana/desktop-slideshow/win32"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -15,8 +18,14 @@ const (
 	ProviderUnsplash = "unsplash"
 )
 
-func NewWallpaperManager(config *Configuration) WallpaperManager {
-	display := GetLargestDisplay()
+type WallpaperManager struct {
+	DownloadDir   string
+	Provider      IWallpaperProvider
+	WallpaperSize *api.WallpaperSize
+}
+
+func NewManager(config *WallpaperManagerConfig) WallpaperManager {
+	display := win32.GetLargestDisplay()
 	log.Infof("Detected display with resolution %dx%d", display.WidthPx, display.HeightPx)
 
 	downloadDir, err := wallpaperDownloadDir()
@@ -27,17 +36,11 @@ func NewWallpaperManager(config *Configuration) WallpaperManager {
 	return WallpaperManager{
 		DownloadDir: downloadDir,
 		Provider:    getProviderByConfig(config),
-		WallpaperSize: &WallpaperSize{
+		WallpaperSize: &api.WallpaperSize{
 			Width:  display.WidthPx,
 			Height: display.HeightPx,
 		},
 	}
-}
-
-type WallpaperManager struct {
-	DownloadDir   string
-	Provider      IWallpaperProvider
-	WallpaperSize *WallpaperSize
 }
 
 func (mgr WallpaperManager) UpdateWallpaper() error {
@@ -51,14 +54,14 @@ func (mgr WallpaperManager) UpdateWallpaper() error {
 	}
 
 	log.Info("Setting wallpaper from path: ", dlPath)
-	if err := SetWallpaperFromFile(dlPath); err != nil {
+	if err := win32.SetWallpaperFromFile(dlPath); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func getProviderByConfig(config *Configuration) IWallpaperProvider {
+func getProviderByConfig(config *WallpaperManagerConfig) IWallpaperProvider {
 
 	if strings.ToLower(config.Provider) == ProviderBing {
 		log.Info("Initialized Bing Provider")

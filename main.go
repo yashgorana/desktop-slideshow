@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/yashgorana/desktop-slideshow/wallpaper"
 )
 
 var (
@@ -30,9 +31,8 @@ func init() {
 func main() {
 	log.Info("App start. Production=", isProd())
 
-	config := GetConfig()
-
-	mgr := NewWallpaperManager(config)
+	config := wallpaper.LoadConfig()
+	mgr := wallpaper.NewManager(config)
 	if err := mgr.UpdateWallpaper(); err != nil {
 		log.Fatal(err)
 	}
