@@ -15,7 +15,7 @@ var (
 func init() {
 	if isProd() {
 		logFilePath := filepath.Join(executablePath(), "app.log")
-		logFp, err := os.OpenFile(logFilePath, os.O_WRONLY|os.O_CREATE, 0755)
+		logFp, err := os.OpenFile(logFilePath, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, 0755)
 		if err != nil {
 			panic(err)
 		}
@@ -30,18 +30,9 @@ func init() {
 func main() {
 	log.Info("App start. Production=", isProd())
 
-	screenRes := getDisplayResolution()
-	log.Infof("Detected screen with resolution %dx%d", screenRes.Width, screenRes.Height)
+	config := GetConfig()
 
-	mgr := WallpaperManager{
-		Resolution: &screenRes,
-		Provider: &UnsplashProvider{
-			// collection/<collection_id> | user/<user_id> | featured, random, daily, weekly
-			Source:     "collection/11649432",
-			SearchTags: "wallpaper",
-		},
-	}
-
+	mgr := NewWallpaperManager(config)
 	if err := mgr.UpdateWallpaper(); err != nil {
 		log.Fatal(err)
 	}
@@ -58,26 +49,4 @@ func executablePath() string {
 		return ""
 	}
 	return filepath.Dir(ex)
-}
-
-func getDisplayResolution() Resolution {
-	displays := GetConnectedDisplays()
-	if displays == nil {
-		log.Fatal("No displays found!")
-	}
-
-	return getLargestDisplayResolution(displays)
-}
-
-func getLargestDisplayResolution(displays *ConnectedDisplays) Resolution {
-	largestResolution := Resolution{}
-
-	for _, disp := range displays.displays {
-		if disp.WidthPx > largestResolution.Width && disp.HeightPx > largestResolution.Height {
-			largestResolution.Width = disp.WidthPx
-			largestResolution.Height = disp.HeightPx
-		}
-	}
-
-	return largestResolution
 }

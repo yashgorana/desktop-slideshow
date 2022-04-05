@@ -21,13 +21,32 @@ var (
 )
 
 type Display struct {
-	WidthPx  uint32
-	HeightPx uint32
+	WidthPx     uint32
+	HeightPx    uint32
+	BitsPerPx   uint32
+	RefreshRate uint32
 }
 
 type ConnectedDisplays struct {
 	count    uint8
 	displays []Display
+}
+
+func GetLargestDisplay() Display {
+	largestDisp := Display{}
+
+	displays := GetConnectedDisplays()
+	if displays == nil {
+		log.Fatal("No displays found!")
+	}
+
+	for _, disp := range displays.displays {
+		if disp.WidthPx > largestDisp.WidthPx && disp.HeightPx > largestDisp.HeightPx {
+			largestDisp = disp
+		}
+	}
+
+	return largestDisp
 }
 
 // SetFromFile sets the wallpaper for the current user.
@@ -75,7 +94,6 @@ func getMonitorSettings(hMonitor w32.HMONITOR) *Display {
 		log.Error("Failed to get monitor settings")
 		return nil
 	}
-	log.Debug("GetMonitorInfoW: Success")
 
 	devMode := w32.DEVMODE{}
 	devMode.DmSize = uint16(unsafe.Sizeof(devMode))
@@ -84,13 +102,12 @@ func getMonitorSettings(hMonitor w32.HMONITOR) *Display {
 		log.Error("Failed to enumerate display settings")
 		return nil
 	}
-	log.Debug("EnumDisplaySettingsEx: Success")
 
 	return &Display{
-		WidthPx:  devMode.DmPelsWidth,
-		HeightPx: devMode.DmPelsHeight,
-		// BitsPerPx: devMode.DmBitsPerPel,
-		// RefreshRate: devMode.DmDisplayFrequency,
+		WidthPx:     devMode.DmPelsWidth,
+		HeightPx:    devMode.DmPelsHeight,
+		BitsPerPx:   devMode.DmBitsPerPel,
+		RefreshRate: devMode.DmDisplayFrequency,
 	}
 }
 

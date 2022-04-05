@@ -1,14 +1,14 @@
 package main
 
-type Resolution struct {
+type WallpaperSize struct {
 	Width  uint32
 	Height uint32
 }
 
-type WallpaperProvider interface {
-	GetApiInstance() WallpaperApi
+type IWallpaperProvider interface {
+	GetApiInstance() IWallpaperApi
 }
 
-type WallpaperApi interface {
-	DownloadWallpaper(resolution *Resolution, toPath string) error
+type IWallpaperApi interface {
+	DownloadWallpaper(size *WallpaperSize, toPath string) error
 }

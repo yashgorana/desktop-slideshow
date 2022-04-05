@@ -50,7 +50,7 @@ type BingProvider struct {
 	Market string
 }
 
-func (p BingProvider) GetApiInstance() WallpaperApi {
+func (p BingProvider) GetApiInstance() IWallpaperApi {
 	return bingWallpaperApi(p)
 }
 
@@ -58,7 +58,7 @@ type bingWallpaperApi struct {
 	Market string
 }
 
-func (api bingWallpaperApi) DownloadWallpaper(res *Resolution, toPath string) error {
+func (api bingWallpaperApi) DownloadWallpaper(size *WallpaperSize, toPath string) error {
 	path, err := filepath.Abs(toPath)
 	if err != nil {
 		return err
@@ -81,8 +81,8 @@ func (api bingWallpaperApi) DownloadWallpaper(res *Resolution, toPath string) er
 	}
 
 	query := url.Query()
-	query.Set("w", fmt.Sprintf("%d", res.Width))
-	query.Set("h", fmt.Sprintf("%d", res.Height))
+	query.Set("w", fmt.Sprintf("%d", size.Width))
+	query.Set("h", fmt.Sprintf("%d", size.Height))
 
 	url.Scheme = "https"
 	url.Host = "bing.com"

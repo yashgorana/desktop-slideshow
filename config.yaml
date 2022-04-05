@@ -1,0 +1,23 @@
+provider: unsplash
+
+# Arguments for the Unsplash provider
+unsplash:
+  # source.unsplash.com slugs to pull content from
+  # Examples:
+  # collection/<collection_id>
+  # user/<user_id>
+  # featured, random
+  sources:
+    - collection/11649432
+    - collection/1263731
+    - collection/2463648
+    - collection/1339090
+    - featured
+  searchTags:
+    - 4K wallpaper
+    - HD wallpaper
+    - wallpaper
+
+# Arguments for the Bing provider
+bing:
+  market: en-US

@@ -17,8 +17,8 @@ Running `build.sh` script generates the executable in the `out/` folder
 - [x] Unsplash API
 - [x] Detect all displays using Win API
 - [x] Automatically pick the best resolution
-- [ ] Set Provider from Config File
-- [ ] Github CI & Releases
+- [x] Set Provider from Config File
 - [ ] Automatically create scheduled task on first launch
+- [ ] Github CI & Releases
 - [ ] Package with MSIX
 - [ ] Improve Readme
