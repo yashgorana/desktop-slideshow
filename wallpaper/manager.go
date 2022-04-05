@@ -44,17 +44,27 @@ func NewManager(config *WallpaperManagerConfig) WallpaperManager {
 }
 
 func (mgr WallpaperManager) UpdateWallpaper() error {
-	dlPath := filepath.Join(mgr.DownloadDir, "wallpaper.wpr")
+	dlPath := filepath.Join(mgr.DownloadDir, "wallpaper.tmp")
+	finalPath := filepath.Join(mgr.DownloadDir, "wallpaper.wpr")
 
 	api := mgr.Provider.GetApiInstance()
 
-	log.Info("Downloading wallpaper")
-	if err := api.DownloadWallpaper(mgr.WallpaperSize, dlPath); err != nil {
+	// Get wallpaper URL
+	log.Info("Downloading wallpaper to: ", dlPath)
+	err := api.DownloadWallpaper(mgr.WallpaperSize, dlPath)
+	if err != nil {
 		return err
 	}
 
-	log.Info("Setting wallpaper from path: ", dlPath)
-	if err := win32.SetWallpaperFromFile(dlPath); err != nil {
+	// Rename to original
+	e := os.Rename(dlPath, finalPath)
+	if e != nil {
+		return err
+	}
+
+	// Set the wallpaper
+	log.Info("Setting wallpaper from: ", finalPath)
+	if err := win32.SetWallpaperFromFile(finalPath); err != nil {
 		return err
 	}
 
