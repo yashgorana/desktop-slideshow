@@ -16,7 +16,7 @@ var (
 func init() {
 	if isProd() {
 		logFilePath := filepath.Join(executablePath(), "app.log")
-		logFp, err := os.OpenFile(logFilePath, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, 0755)
+		logFp, err := os.Create(logFilePath)
 		if err != nil {
 			panic(err)
 		}
