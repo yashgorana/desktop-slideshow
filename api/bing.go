@@ -19,15 +19,11 @@ type BingApi struct {
 	Market string
 }
 
-func (api BingApi) DownloadWallpaper(size *WallpaperSize, toPath string) error {
-	path, err := filepath.Abs(toPath)
-	if err != nil {
-		return err
-	}
+func (api BingApi) GetWallpaperUrl(size *WallpaperSize) (string, error) {
 
 	resp, err := getWallpaperMetadata(api.Market, 1)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	// Get the latest image
@@ -38,7 +34,7 @@ func (api BingApi) DownloadWallpaper(size *WallpaperSize, toPath string) error {
 
 	url, err := url.Parse(imgUrlUHD)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	query := url.Query()
@@ -49,11 +45,22 @@ func (api BingApi) DownloadWallpaper(size *WallpaperSize, toPath string) error {
 	url.Host = "bing.com"
 	url.RawQuery = query.Encode()
 
-	dlUrl := url.String()
+	return url.String(), nil
+}
 
-	log.Debug("BingWallpaperApi: Fetching image from ", dlUrl, " to ", path)
+func (api BingApi) DownloadWallpaper(size *WallpaperSize, toPath string) error {
+	path, err := filepath.Abs(toPath)
+	if err != nil {
+		return err
+	}
 
-	return utils.DownloadFile(dlUrl, path)
+	imgUrl, err := api.GetWallpaperUrl(size)
+	if err != nil {
+		return err
+	}
+
+	log.Info("BingWallpaperApi: URL ", imgUrl)
+	return utils.DownloadFile(imgUrl, path)
 }
 
 func getWallpaperMetadata(market string, count uint8) (*bingWallpaperApiResponse, error) {
@@ -64,7 +71,7 @@ func getWallpaperMetadata(market string, count uint8) (*bingWallpaperApiResponse
 		idx:    0,
 	})
 
-	log.Debug("BingWallpaperApi: Metadata URL=", apiUrl)
+	log.Debug("BingWallpaperApi: Metadata URL - ", apiUrl)
 
 	client := http.Client{
 		Timeout: 30 * time.Second,

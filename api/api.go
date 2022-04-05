@@ -6,5 +6,6 @@ type WallpaperSize struct {
 }
 
 type IWallpaperApi interface {
+	GetWallpaperUrl(size *WallpaperSize) (string, error)
 	DownloadWallpaper(size *WallpaperSize, toPath string) error
 }

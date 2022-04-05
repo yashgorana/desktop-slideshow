@@ -17,16 +17,20 @@ type UnsplashApi struct {
 	SearchTags []string
 }
 
+func (api UnsplashApi) GetWallpaperUrl(size *WallpaperSize) (string, error) {
+	return api.unsplashUrlWithSize(size.Width, size.Height), nil
+}
+
 func (api UnsplashApi) DownloadWallpaper(size *WallpaperSize, toPath string) error {
 	path, err := filepath.Abs(toPath)
 	if err != nil {
 		return err
 	}
 
-	url := api.unsplashUrlWithSize(size.Width, size.Height)
-	log.Debug("UnsplashApi: Fetching image from ", url, " to ", path)
+	imgUrl, _ := api.GetWallpaperUrl(size)
+	log.Info("UnsplashApi: URL ", imgUrl)
 
-	return utils.DownloadFile(url, toPath)
+	return utils.DownloadFile(imgUrl, path)
 }
 
 func (api UnsplashApi) unsplashUrlWithSize(w uint32, h uint32) string {
