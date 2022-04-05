@@ -3,7 +3,6 @@ package api
 import (
 	"fmt"
 	"net/url"
-	"path/filepath"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -22,15 +21,10 @@ func (api UnsplashApi) GetWallpaperUrl(size *WallpaperSize) (string, error) {
 }
 
 func (api UnsplashApi) DownloadWallpaper(size *WallpaperSize, toPath string) error {
-	path, err := filepath.Abs(toPath)
-	if err != nil {
-		return err
-	}
-
 	imgUrl, _ := api.GetWallpaperUrl(size)
 	log.Info("UnsplashApi: URL ", imgUrl)
 
-	return utils.DownloadFile(imgUrl, path)
+	return utils.DownloadFile(imgUrl, toPath)
 }
 
 func (api UnsplashApi) unsplashUrlWithSize(w uint32, h uint32) string {

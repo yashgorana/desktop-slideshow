@@ -5,12 +5,20 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 )
 
-func DownloadFile(url string, path string) error {
-	client := http.Client{
+var (
+	client = http.Client{
 		Timeout: 30 * time.Second,
+	}
+)
+
+func DownloadFile(url string, path string) error {
+	path, err := filepath.Abs(path)
+	if err != nil {
+		return err
 	}
 
 	// Create a new file at path

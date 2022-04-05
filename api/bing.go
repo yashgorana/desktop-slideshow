@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"path/filepath"
 	"strconv"
 	"time"
 
@@ -49,18 +48,13 @@ func (api BingApi) GetWallpaperUrl(size *WallpaperSize) (string, error) {
 }
 
 func (api BingApi) DownloadWallpaper(size *WallpaperSize, toPath string) error {
-	path, err := filepath.Abs(toPath)
-	if err != nil {
-		return err
-	}
-
 	imgUrl, err := api.GetWallpaperUrl(size)
 	if err != nil {
 		return err
 	}
 
 	log.Info("BingWallpaperApi: URL ", imgUrl)
-	return utils.DownloadFile(imgUrl, path)
+	return utils.DownloadFile(imgUrl, toPath)
 }
 
 func getWallpaperMetadata(market string, count uint8) (*bingWallpaperApiResponse, error) {
