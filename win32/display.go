@@ -21,6 +21,7 @@ type ConnectedDisplays struct {
 	displays []Display
 }
 
+// GetLargestDisplay returns the Display with the largest resolution (by pixelss) in all ConnectedDisplays
 func GetLargestDisplay() Display {
 	largestDisp := Display{}
 
@@ -43,7 +44,7 @@ func GetConnectedDisplays() *ConnectedDisplays {
 	monitors := &ConnectedDisplays{}
 
 	result := w32.EnumDisplayMonitors(w32.HDC(0), nil, syscall.NewCallback(enumDisplayMonitorsCb), uintptr(unsafe.Pointer(monitors)))
-	log.Debug("EnumDisplayMonitors result: ", result)
+	log.Debug("EnumDisplayMonitors: ", result)
 
 	return monitors
 }
@@ -52,8 +53,9 @@ func GetConnectedDisplays() *ConnectedDisplays {
 func enumDisplayMonitorsCb(hMonitor w32.HMONITOR, hdc w32.HDC, lpRect *w32.RECT, dwData w32.LPARAM) uintptr {
 	// Unwrap dwData as pointer to ConnectedMonitors
 	monitors := (*ConnectedDisplays)(unsafe.Pointer(dwData))
-
 	if result := getMonitorSettings(hMonitor); result != nil {
+		log.Debug("EnumDisplayMonitors Callback: Monitor settings - ", result)
+
 		monitors.count = monitors.count + 1
 		monitors.displays = append(monitors.displays, *result)
 	}
@@ -67,6 +69,7 @@ func getMonitorSettings(hMonitor w32.HMONITOR) *Display {
 		log.Error("Failed to get monitor settings")
 		return nil
 	}
+	log.Debug("getMonitorInfoW: ", info)
 
 	devMode := w32.DEVMODE{}
 	devMode.DmSize = uint16(unsafe.Sizeof(devMode))
@@ -75,6 +78,7 @@ func getMonitorSettings(hMonitor w32.HMONITOR) *Display {
 		log.Error("Failed to enumerate display settings")
 		return nil
 	}
+	log.Debug("EnumDisplaySettingsEx: ", devMode)
 
 	return &Display{
 		WidthPx:     devMode.DmPelsWidth,
