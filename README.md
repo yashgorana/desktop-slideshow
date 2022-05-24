@@ -18,6 +18,7 @@ Running `build.sh` script generates the executable in the `.out/` folder
 - [x] Detect all displays using Win API
 - [x] Automatically pick the best resolution
 - [x] Set Provider from Config File
+- [x] Automatically create "Next Wallpaper" in desktop context menu
 - [ ] Automatically create scheduled task on first launch
 - [ ] Github CI & Releases
 - [ ] Package with MSIX

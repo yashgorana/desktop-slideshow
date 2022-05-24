@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/yashgorana/desktop-slideshow/app"
+	"github.com/yashgorana/desktop-slideshow/utils"
 	"github.com/yashgorana/desktop-slideshow/wallpaper"
 )
 
@@ -13,15 +15,22 @@ var (
 	Version     string
 )
 
+func isProd() bool {
+	return Environment == "PROD"
+}
+
 func init() {
 	if isProd() {
-		logFilePath := filepath.Join(executablePath(), "app.log")
+		logFilePath := filepath.Join(utils.ExecutableDir(), "app.log")
 		logFp, err := os.Create(logFilePath)
+		// logFp, err := os.OpenFile(logFilePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 		if err != nil {
 			panic(err)
 		}
 		log.SetOutput(logFp)
 		log.SetLevel(log.InfoLevel)
+
+		app.Init()
 	} else {
 		log.SetOutput(os.Stdout)
 		log.SetLevel(log.DebugLevel)
@@ -37,16 +46,4 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Info("Done")
-}
-
-func isProd() bool {
-	return Environment == "PROD"
-}
-
-func executablePath() string {
-	ex, err := os.Executable()
-	if err != nil {
-		return ""
-	}
-	return filepath.Dir(ex)
 }
