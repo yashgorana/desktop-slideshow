@@ -29,8 +29,16 @@ func (api UnsplashApi) DownloadWallpaper(size *WallpaperSize, toPath string) err
 
 func (api UnsplashApi) unsplashUrlWithSize(w uint32, h uint32) string {
 	searchTags := ""
+
 	if len(api.SearchTags) > 0 {
-		searchTags = fmt.Sprintf("?%s", url.QueryEscape(strings.Join(api.SearchTags, ",")))
+		searchTags = url.QueryEscape(strings.Join(api.SearchTags, ","))
 	}
-	return fmt.Sprintf("https://source.unsplash.com/%s/%dx%d/%s", api.Source, w, h, searchTags)
+
+	url := url.URL{
+		Scheme:   "https",
+		Host:     "source.unsplash.com",
+		Path:     fmt.Sprintf("/%s/%dx%d", api.Source, w, h),
+		RawQuery: searchTags,
+	}
+	return url.String()
 }
