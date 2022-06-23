@@ -2,7 +2,6 @@ package app
 
 import (
 	"os"
-	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/yashgorana/desktop-slideshow/utils"
@@ -39,7 +38,7 @@ func hasDesktopShellEntry() bool {
 		return false
 	}
 
-	return strings.Contains(val, ExecutableName)
+	return val == utils.ExecutablePath()
 }
 
 func createDesktopShellEntry() error {
