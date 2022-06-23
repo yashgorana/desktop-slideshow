@@ -18,7 +18,7 @@ func SetWallpaperFromFile(filename string) error {
 		return err
 	}
 
-	systemParametersInfo.Call(
+	libSystemParametersInfo.Call(
 		uintptr(SPI_SETDESKWALLPAPER),
 		uintptr(0),
 		uintptr(unsafe.Pointer(filenamePtr)),
